@@ -7,7 +7,7 @@ import tech.buildrun.poi.repository.PointOfInterestRepository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;  // Import correto para Page
+import org.springframework.data.domain.Page;  
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
