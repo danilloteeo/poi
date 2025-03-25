@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.buildrun.poi.controller.dto.CreatePointOfInterest;
 import tech.buildrun.poi.entity.PointOfInterest;
 import tech.buildrun.poi.repository.PointOfInterestRepository;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;  // Import correto para Page
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +41,7 @@ public class PointOfInterestController {
     }
 
     @GetMapping("/near-me")
-    public ResponseEntity<Page<PointOfInterest>> nearMe(
+    public ResponseEntity<List<PointOfInterest>> nearMe(
             @RequestParam("x") Long x,
             @RequestParam("y") Long y,
             @RequestParam("dmax") Long dmax) {
@@ -49,8 +52,15 @@ public class PointOfInterestController {
         var yMax = y + dmax;
         
 
-        var body = repository.findNearMe(xMin, xMax, yMin, yMax);
+        var body = repository.findNearMe(xMin, xMax, yMin, yMax)
+                .stream()
+                .filter(p -> distanceBetweenPoints(x, y, p.getX(), p.getY()) <= dmax)
+                .toList();
         
         return ResponseEntity.ok(body);
+    }
+
+    private Double distanceBetweenPoints(Long x1, Long y1, Long x2, Long y2) {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 }
